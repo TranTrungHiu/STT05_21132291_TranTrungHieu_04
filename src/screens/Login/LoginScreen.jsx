@@ -17,7 +17,7 @@ function LoginScreen() {
     try {
       setIsLoading(true)
       
-      // Lấy danh sách người dùng từ API
+      // Lấy danh sách người dùng từ API - using the correct API endpoint
       const response = await fetch('https://6808ab9a942707d722df227c.mockapi.io/users')
       
       if (!response.ok) {
@@ -27,16 +27,23 @@ function LoginScreen() {
       const users = await response.json()
       
       // Kiểm tra thông tin đăng nhập
-      const user = users.find(user => user.email === email && user.password === password)
+      const user = users.find(user => 
+        (user.email === email || user.username === email) && user.password === password
+      )
       
       if (user) {
+        // Fetch liked videos if they exist
+        if (!user.likedVideos) {
+          user.likedVideos = []
+        }
+        
         // Lưu thông tin người dùng vào localStorage
         localStorage.setItem('user', JSON.stringify(user))
         
         // Chuyển hướng đến trang home
         navigate('/home')
       } else {
-        setError('Email hoặc mật khẩu không chính xác')
+        setError('Email/username hoặc mật khẩu không chính xác')
       }
     } catch (error) {
       console.error('Lỗi đăng nhập:', error)
@@ -63,8 +70,8 @@ function LoginScreen() {
         <form onSubmit={handleLogin}>
           <div className="input-group">
             <input 
-              type="email" 
-              placeholder="Email" 
+              type="text" 
+              placeholder="Email or Username" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
