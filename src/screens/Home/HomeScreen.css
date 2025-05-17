@@ -121,9 +121,29 @@
   background-color: #f0f0f0;
 }
 
-.notification-button img {
-  width: 20px;
-  height: 20px;
+.notification-button img,
+.more-button img,
+.back-button img {
+  width: 22px;
+  height: 22px;
+}
+
+.icon-button {
+  width: 24px !important;
+  height: 24px !important;
+  color: #444;
+}
+
+.button-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.button-icon.svg-icon {
+  width: 18px !important;
+  height: 18px !important;
 }
 
 /* Profile section styling */
@@ -220,12 +240,46 @@
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(61, 126, 255, 0.3);
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.follow-button.following {
+  background-color: #e0e0e0;
+  color: #333;
 }
 
 .follow-button:hover {
   background-color: #2a6ae6;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(61, 126, 255, 0.4);
+}
+
+.follow-button.following:hover {
+  background-color: #d0d0d0;
+}
+
+.edit-profile-button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 35px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-profile-button:hover {
+  background-color: #e5e5e5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .message-button {
@@ -366,6 +420,10 @@
   object-fit: cover;
 }
 
+.account-picture-container {
+  cursor: pointer;
+}
+
 .account-name {
   font-size: 14px;
   font-weight: 500;
@@ -376,6 +434,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 80px;
+  cursor: pointer;
+}
+
+.account-name:hover {
+  color: #3D7EFF;
 }
 
 .follow-button.small {
@@ -383,6 +446,15 @@
   font-size: 12px;
   border-radius: 20px;
   min-width: 70px;
+}
+
+.follow-button.small.following {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.follow-button.small.following:hover {
+  background-color: #d0d0d0;
 }
 
 /* Video section styling */
@@ -444,9 +516,19 @@
   transition: opacity 0.3s;
 }
 
+.tab-icon.svg-icon {
+  width: 22px !important;
+  height: 22px !important;
+  stroke: #666;
+}
+
 .video-tab:hover .tab-icon,
 .video-tab.active .tab-icon {
   opacity: 1;
+}
+
+.video-tab.active .tab-icon.svg-icon {
+  stroke: #3D7EFF;
 }
 
 .video-grid {
@@ -461,45 +543,197 @@
   aspect-ratio: 1/1;
   overflow: hidden;
   transition: transform 0.3s ease;
+  background-color: #000;
+  border-radius: 4px;
 }
 
 .video-card:hover {
   transform: scale(1.02);
   z-index: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .video-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity 0.3s;
+}
+
+.video-card:hover img {
+  opacity: 0.92;
+}
+
+.video-meta {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
 }
 
 .video-views, .video-likes {
-  position: absolute;
   display: flex;
   align-items: center;
   color: white;
-  font-size: 10px;
+  font-size: 12px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
-  padding: 2px 6px;
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 10px;
-  bottom: 6px;
 }
 
-.video-views {
-  left: 6px;
+.meta-icon {
+  width: 14px !important;
+  height: 14px !important;
+  margin-right: 4px;
+  filter: brightness(0) invert(1);
 }
 
-.video-likes {
-  right: 6px;
+.meta-icon.svg-icon {
+  width: 16px !important;
+  height: 16px !important;
+  filter: brightness(0) invert(1) !important;
+  stroke: #ffffff;
 }
 
-.play-icon, .like-icon {
-  width: 10px !important;
-  width: 10px !important;
-  margin-right: 3px;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+.like-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+
+.like-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.like-button.active {
+  background-color: rgba(255, 50, 100, 0.3);
+}
+
+.like-button-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.like-button-icon.svg-icon {
+  filter: brightness(0) invert(1);
+  width: 20px !important;
+  height: 20px !important;
+  stroke: #ffffff;
+}
+
+.like-button.active .like-button-icon.svg-icon {
+  filter: none;
+  stroke: #ff3b5c;
+}
+
+/* Remove filter for heart icons specifically */
+.like-button-icon.svg-icon[src*="heart"] {
+  stroke: #ffffff;
+}
+
+.like-button-icon.svg-icon[src*="heart-filled"] {
+  filter: none;
+  stroke: #ff3b5c;
+  fill: #ff3b5c;
+}
+
+.empty-likes-message {
+  grid-column: span 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #888;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.empty-subtext {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #aaa;
+}
+
+/* Follow button icon styles */
+.follow-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  filter: brightness(0) invert(1); /* Makes the icon white */
+  transition: all 0.3s;
+}
+
+.follow-icon.svg-icon {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.following .follow-icon {
+  filter: none;
+}
+
+.following .follow-icon.svg-icon {
+  filter: none !important;
+}
+
+.follow-icon.checked {
+  /* Show a check mark icon for following state */
+  opacity: 0.8;
+}
+
+/* SVG icon styles */
+.svg-icon {
+  filter: none !important;
+  width: 22px !important;
+  height: 22px !important;
+}
+
+.video-tab .svg-icon[src*="video"] {
+  stroke: #666;
+}
+
+.video-tab.active .svg-icon[src*="video"] {
+  filter: invert(39%) sepia(74%) saturate(1909%) hue-rotate(210deg) brightness(97%) contrast(98%) !important;
+  stroke: #3D7EFF;
+}
+
+.video-tab .svg-icon[src*="heart"] {
+  stroke: #666;
+}
+
+.video-tab.active .svg-icon[src*="heart-filled"] {
+  filter: none !important; 
+  stroke: #3D7EFF;
+  color: #3D7EFF;
+}
+
+.video-tab .svg-icon {
+  opacity: 0.8;
+}
+
+.video-tab.active .svg-icon {
+  opacity: 1;
 }
 
 /* Media queries for better responsiveness */

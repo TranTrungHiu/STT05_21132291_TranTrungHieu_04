@@ -34,13 +34,13 @@ function HomeScreen() {
       try {
         const parsedUser = JSON.parse(userData);
         console.log("Parsed user data:", parsedUser);
-
+        
         // Make sure likedVideos is initialized
         if (!parsedUser.likedVideos) {
           parsedUser.likedVideos = [];
           localStorage.setItem("user", JSON.stringify(parsedUser));
         }
-
+        
         setUser(parsedUser);
 
         // Fetch suggested users from mock API
@@ -177,15 +177,11 @@ function HomeScreen() {
       }
 
       // Check if already liked
-      const videoIndex = updatedUser.likedVideos.findIndex(
-        (v) => v.id === video.id
-      );
+      const videoIndex = updatedUser.likedVideos.findIndex((v) => v.id === video.id);
 
       if (videoIndex >= 0) {
         // Unlike - remove from array
-        updatedUser.likedVideos = updatedUser.likedVideos.filter(
-          (v) => v.id !== video.id
-        );
+        updatedUser.likedVideos = updatedUser.likedVideos.filter((v) => v.id !== video.id);
       } else {
         // Like - add to array
         updatedUser.likedVideos.push(video);
@@ -217,24 +213,6 @@ function HomeScreen() {
       console.error("Error updating like status:", error);
     }
   };
-  // Helper function to render follow button with proper UI
-  const renderFollowButton = (isFollowing) => {
-    return isFollowing ? (
-      <>
-        <img
-          src={userPlusIcon}
-          alt="Following"
-          className="follow-icon checked svg-icon"
-        />
-        Following
-      </>
-    ) : (
-      <>
-        <img src={userPlusIcon} alt="Follow" className="follow-icon svg-icon" />
-        Follow
-      </>
-    );
-  };
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -251,28 +229,20 @@ function HomeScreen() {
   };
   return (
     <div className="home-container">
-      {" "}
       <div className="header">
         <button className="back-button" onClick={handleGoBack}>
-          <img
-            src={chevronLeftIcon}
-            alt="Back"
-            className="icon-button svg-icon"
-          />
+          <img src={chevronLeftIcon} alt="Back" className="icon-button" />
         </button>
         <div className="header-actions">
           <button className="notification-button">
-            <img
-              src={bellIcon}
-              alt="Notifications"
-              className="icon-button svg-icon"
-            />
+            <img src={bellIcon} alt="Notifications" className="icon-button" />
           </button>
           <button className="more-button" onClick={handleLogout}>
-            <img src={moreIcon} alt="More" className="icon-button svg-icon" />
+            <img src={moreIcon} alt="More" className="icon-button" />
           </button>
         </div>
       </div>
+
       {/* Section 1: User Profile */}
       <section className="profile-section">
         <div className="profile-header">
@@ -309,6 +279,7 @@ function HomeScreen() {
           </div>
         </div>
       </section>
+
       {/* Section 2: Suggested Accounts */}
       <section className="suggested-section">
         <div className="section-header">
@@ -356,9 +327,9 @@ function HomeScreen() {
                       }`}
                       onClick={() => handleFollow(suggestedUser.id)}
                     >
-                      {renderFollowButton(
-                        user?.following?.includes(suggestedUser.id)
-                      )}
+                      {user?.following?.includes(suggestedUser.id)
+                        ? "Following"
+                        : "Follow"}
                     </button>
                   </div>
                 ))}
@@ -397,9 +368,9 @@ function HomeScreen() {
                         }`}
                         onClick={() => handleFollow(suggestedUser.id)}
                       >
-                        {renderFollowButton(
-                          user?.following?.includes(suggestedUser.id)
-                        )}
+                        {user?.following?.includes(suggestedUser.id)
+                          ? "Following"
+                          : "Follow"}
                       </button>
                     </div>
                   ))}
@@ -421,21 +392,14 @@ function HomeScreen() {
                     alt="Fiora"
                     className="account-picture"
                   />
-                </div>{" "}
+                </div>
                 <p
                   className="account-name"
                   onClick={() => alert("View Fiora's profile")}
                 >
                   Fiora
                 </p>
-                <button className="follow-button small">
-                  <img
-                    src={userPlusIcon}
-                    alt="Follow"
-                    className="follow-icon svg-icon"
-                  />
-                  Follow
-                </button>
+                <button className="follow-button small">Follow</button>
               </div>
               <div className="account">
                 <button className="close-button">×</button>
@@ -448,21 +412,14 @@ function HomeScreen() {
                     alt="Robb"
                     className="account-picture"
                   />
-                </div>{" "}
+                </div>
                 <p
                   className="account-name"
                   onClick={() => alert("View Robb's profile")}
                 >
                   Robb
                 </p>
-                <button className="follow-button small">
-                  <img
-                    src={userPlusIcon}
-                    alt="Follow"
-                    className="follow-icon svg-icon"
-                  />
-                  Follow
-                </button>
+                <button className="follow-button small">Follow</button>
               </div>
               <div className="account">
                 <button className="close-button">×</button>
@@ -475,357 +432,250 @@ function HomeScreen() {
                     alt="Kolby"
                     className="account-picture"
                   />
-                </div>{" "}
+                </div>
                 <p
                   className="account-name"
                   onClick={() => alert("View Kolby's profile")}
                 >
                   Kolby
                 </p>
-                <button className="follow-button small">
-                  <img
-                    src={userPlusIcon}
-                    alt="Follow"
-                    className="follow-icon svg-icon"
-                  />
-                  Follow
-                </button>
+                <button className="follow-button small">Follow</button>
               </div>
             </div>
           )}
         </div>
-      </section>{" "}
-      {/* Section 3: Video-Like Section */}
+      </section>      {/* Section 3: Video-Like Section */}
       <section className="video-section">
-        {" "}
         <div className="video-tabs">
           <button
             className={`video-tab ${activeTab === "videos" ? "active" : ""}`}
             onClick={() => handleTabChange("videos")}
           >
-            <img src={videoIcon} alt="Videos" className="tab-icon svg-icon" />
+            <img src={videoIcon} alt="Videos" className="tab-icon" />
             <span>Videos</span>
           </button>
           <button
             className={`video-tab ${activeTab === "liked" ? "active" : ""}`}
             onClick={() => handleTabChange("liked")}
           >
-            <img
-              src={heartFilledIcon}
-              alt="Liked"
-              className="tab-icon svg-icon"
-            />
+            <img src={heartFilledIcon} alt="Liked" className="tab-icon" />
             <span>Liked</span>
           </button>
         </div>
+
         <div className="video-grid">
           {activeTab === "videos" ? (
             // All videos section
             <>
               <div className="video-card">
-                <img src="/src/assets/images/Image 285.jpg" alt="Video 1" />{" "}
+                <img src="/src/assets/images/Image 285.jpg" alt="Video 1" />
                 <div className="video-meta">
                   <div className="video-views">
-                    <img
-                      src={eyeIcon}
-                      alt="Views"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={eyeIcon} alt="Views" className="meta-icon" />
                     <span>1.5M</span>
                   </div>
                   <div className="video-likes">
-                    <img
-                      src={thumbsUpIcon}
-                      alt="Likes"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={thumbsUpIcon} alt="Likes" className="meta-icon" />
                     <span>125K</span>
                   </div>
-                </div>{" "}
-                <button
-                  className="like-button"
-                  onClick={() =>
-                    handleLikeVideo({
-                      id: "v1",
-                      thumbnail: "/src/assets/images/Image 285.jpg",
-                      views: 1500000,
-                      likes: 125000,
-                    })
-                  }
+                </div>
+                <button 
+                  className="like-button" 
+                  onClick={() => handleLikeVideo({
+                    id: 'v1',
+                    thumbnail: '/src/assets/images/Image 285.jpg',
+                    views: 1500000,
+                    likes: 125000
+                  })}
                 >
-                  {" "}
-                  <img
-                    src={
-                      user?.likedVideos?.some((v) => v.id === "v1")
-                        ? heartFilledIcon
-                        : heartIcon
-                    }
-                    alt="Like"
-                    className="like-button-icon svg-icon"
+                  <img 
+                    src={user?.likedVideos?.some(v => v.id === 'v1') ? heartFilledIcon : heartIcon} 
+                    alt="Like" 
+                    className="like-button-icon" 
                   />
                 </button>
-              </div>{" "}
+              </div>
+
               <div className="video-card">
                 <img src="/src/assets/images/Image 286.jpg" alt="Video 2" />
                 <div className="video-meta">
                   <div className="video-views">
-                    <img
-                      src={eyeIcon}
-                      alt="Views"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={eyeIcon} alt="Views" className="meta-icon" />
                     <span>1.1M</span>
                   </div>
                   <div className="video-likes">
-                    <img
-                      src={thumbsUpIcon}
-                      alt="Likes"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={thumbsUpIcon} alt="Likes" className="meta-icon" />
                     <span>89K</span>
                   </div>
                 </div>
-                <button
-                  className="like-button"
-                  onClick={() =>
-                    handleLikeVideo({
-                      id: "v2",
-                      thumbnail: "/src/assets/images/Image 286.jpg",
-                      views: 1100000,
-                      likes: 89000,
-                    })
-                  }
+                <button 
+                  className="like-button" 
+                  onClick={() => handleLikeVideo({
+                    id: 'v2',
+                    thumbnail: '/src/assets/images/Image 286.jpg',
+                    views: 1100000,
+                    likes: 89000
+                  })}
                 >
-                  {" "}
-                  <img
-                    src={
-                      user?.likedVideos?.some((v) => v.id === "v2")
-                        ? heartFilledIcon
-                        : heartIcon
-                    }
-                    alt="Like"
-                    className="like-button-icon svg-icon"
+                  <img 
+                    src={user?.likedVideos?.some(v => v.id === 'v2') ? heartFilledIcon : heartIcon} 
+                    alt="Like" 
+                    className="like-button-icon" 
                   />
                 </button>
-              </div>{" "}
+              </div>
+
               <div className="video-card">
                 <img src="/src/assets/images/Image 287.jpg" alt="Video 3" />
                 <div className="video-meta">
                   <div className="video-views">
-                    <img
-                      src={eyeIcon}
-                      alt="Views"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={eyeIcon} alt="Views" className="meta-icon" />
                     <span>2.2M</span>
                   </div>
                   <div className="video-likes">
-                    <img
-                      src={thumbsUpIcon}
-                      alt="Likes"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={thumbsUpIcon} alt="Likes" className="meta-icon" />
                     <span>203K</span>
                   </div>
                 </div>
-                <button
-                  className="like-button"
-                  onClick={() =>
-                    handleLikeVideo({
-                      id: "v3",
-                      thumbnail: "/src/assets/images/Image 287.jpg",
-                      views: 2200000,
-                      likes: 203000,
-                    })
-                  }
+                <button 
+                  className="like-button" 
+                  onClick={() => handleLikeVideo({
+                    id: 'v3',
+                    thumbnail: '/src/assets/images/Image 287.jpg',
+                    views: 2200000,
+                    likes: 203000
+                  })}
                 >
-                  {" "}
-                  <img
-                    src={
-                      user?.likedVideos?.some((v) => v.id === "v3")
-                        ? heartFilledIcon
-                        : heartIcon
-                    }
-                    alt="Like"
-                    className="like-button-icon svg-icon"
+                  <img 
+                    src={user?.likedVideos?.some(v => v.id === 'v3') ? heartFilledIcon : heartIcon} 
+                    alt="Like" 
+                    className="like-button-icon" 
                   />
                 </button>
-              </div>{" "}
+              </div>
+
               <div className="video-card">
                 <img src="/src/assets/images/Image 288.jpg" alt="Video 4" />
                 <div className="video-meta">
                   <div className="video-views">
-                    <img
-                      src={eyeIcon}
-                      alt="Views"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={eyeIcon} alt="Views" className="meta-icon" />
                     <span>514K</span>
                   </div>
                   <div className="video-likes">
-                    <img
-                      src={thumbsUpIcon}
-                      alt="Likes"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={thumbsUpIcon} alt="Likes" className="meta-icon" />
                     <span>42K</span>
                   </div>
                 </div>
-                <button
-                  className="like-button"
-                  onClick={() =>
-                    handleLikeVideo({
-                      id: "v4",
-                      thumbnail: "/src/assets/images/Image 288.jpg",
-                      views: 514000,
-                      likes: 42000,
-                    })
-                  }
+                <button 
+                  className="like-button" 
+                  onClick={() => handleLikeVideo({
+                    id: 'v4',
+                    thumbnail: '/src/assets/images/Image 288.jpg',
+                    views: 514000,
+                    likes: 42000
+                  })}
                 >
-                  {" "}
-                  <img
-                    src={
-                      user?.likedVideos?.some((v) => v.id === "v4")
-                        ? heartFilledIcon
-                        : heartIcon
-                    }
-                    alt="Like"
-                    className="like-button-icon svg-icon"
+                  <img 
+                    src={user?.likedVideos?.some(v => v.id === 'v4') ? heartFilledIcon : heartIcon} 
+                    alt="Like" 
+                    className="like-button-icon" 
                   />
                 </button>
-              </div>{" "}
+              </div>
+
               <div className="video-card">
                 <img src="/src/assets/images/Image 289.jpg" alt="Video 5" />
                 <div className="video-meta">
                   <div className="video-views">
-                    <img
-                      src={eyeIcon}
-                      alt="Views"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={eyeIcon} alt="Views" className="meta-icon" />
                     <span>1.3M</span>
                   </div>
                   <div className="video-likes">
-                    <img
-                      src={thumbsUpIcon}
-                      alt="Likes"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={thumbsUpIcon} alt="Likes" className="meta-icon" />
                     <span>111K</span>
                   </div>
                 </div>
-                <button
-                  className="like-button"
-                  onClick={() =>
-                    handleLikeVideo({
-                      id: "v5",
-                      thumbnail: "/src/assets/images/Image 289.jpg",
-                      views: 1300000,
-                      likes: 111000,
-                    })
-                  }
+                <button 
+                  className="like-button" 
+                  onClick={() => handleLikeVideo({
+                    id: 'v5',
+                    thumbnail: '/src/assets/images/Image 289.jpg',
+                    views: 1300000,
+                    likes: 111000
+                  })}
                 >
-                  {" "}
-                  <img
-                    src={
-                      user?.likedVideos?.some((v) => v.id === "v5")
-                        ? heartFilledIcon
-                        : heartIcon
-                    }
-                    alt="Like"
-                    className="like-button-icon svg-icon"
+                  <img 
+                    src={user?.likedVideos?.some(v => v.id === 'v5') ? heartFilledIcon : heartIcon} 
+                    alt="Like" 
+                    className="like-button-icon" 
                   />
                 </button>
-              </div>{" "}
+              </div>
+
               <div className="video-card">
                 <img src="/src/assets/images/Image 290.jpg" alt="Video 6" />
                 <div className="video-meta">
                   <div className="video-views">
-                    <img
-                      src={eyeIcon}
-                      alt="Views"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={eyeIcon} alt="Views" className="meta-icon" />
                     <span>3.1M</span>
                   </div>
                   <div className="video-likes">
-                    <img
-                      src={thumbsUpIcon}
-                      alt="Likes"
-                      className="meta-icon svg-icon"
-                    />
+                    <img src={thumbsUpIcon} alt="Likes" className="meta-icon" />
                     <span>267K</span>
                   </div>
                 </div>
-                <button
-                  className="like-button"
-                  onClick={() =>
-                    handleLikeVideo({
-                      id: "v6",
-                      thumbnail: "/src/assets/images/Image 290.jpg",
-                      views: 3100000,
-                      likes: 267000,
-                    })
-                  }
+                <button 
+                  className="like-button" 
+                  onClick={() => handleLikeVideo({
+                    id: 'v6',
+                    thumbnail: '/src/assets/images/Image 290.jpg',
+                    views: 3100000,
+                    likes: 267000
+                  })}
                 >
-                  {" "}
-                  <img
-                    src={
-                      user?.likedVideos?.some((v) => v.id === "v6")
-                        ? heartFilledIcon
-                        : heartIcon
-                    }
-                    alt="Like"
-                    className="like-button-icon svg-icon"
+                  <img 
+                    src={user?.likedVideos?.some(v => v.id === 'v6') ? heartFilledIcon : heartIcon} 
+                    alt="Like" 
+                    className="like-button-icon" 
                   />
                 </button>
               </div>
             </>
-          ) : // Liked videos section
-          likedVideos && likedVideos.length > 0 ? (
-            likedVideos.map((video) => (
-              <div className="video-card" key={video.id}>
-                <img src={video.thumbnail} alt="Liked video" />
-                <div className="video-meta">
-                  <div className="video-views">
-                    <img
-                      src={eyeIcon}
-                      alt="Views"
-                      className="meta-icon svg-icon"
-                    />
-                    <span>{formatViewCount(video.views || 0)}</span>
-                  </div>
-                  <div className="video-likes">
-                    <img
-                      src={thumbsUpIcon}
-                      alt="Likes"
-                      className="meta-icon svg-icon"
-                    />
-                    <span>{formatViewCount(video.likes || 0)}</span>
-                  </div>
-                </div>
-                <button
-                  className="like-button active"
-                  onClick={() => handleLikeVideo(video)}
-                >
-                  <img
-                    src={heartFilledIcon}
-                    alt="Unlike"
-                    className="like-button-icon svg-icon"
-                  />
-                </button>
-              </div>
-            ))
           ) : (
-            <div className="empty-likes-message">
-              <img
-                src={heartIcon}
-                alt="No liked videos"
-                className="empty-icon svg-icon"
-              />
-              <p>No liked videos yet</p>
-              <p className="empty-subtext">Videos you like will appear here</p>
-            </div>
+            // Liked videos section
+            likedVideos && likedVideos.length > 0 ? (
+              likedVideos.map((video) => (
+                <div className="video-card" key={video.id}>
+                  <img src={video.thumbnail} alt="Liked video" />
+                  <div className="video-meta">
+                    <div className="video-views">
+                      <img src={eyeIcon} alt="Views" className="meta-icon" />
+                      <span>{formatViewCount(video.views || 0)}</span>
+                    </div>
+                    <div className="video-likes">
+                      <img src={thumbsUpIcon} alt="Likes" className="meta-icon" />
+                      <span>{formatViewCount(video.likes || 0)}</span>
+                    </div>
+                  </div>
+                  <button 
+                    className="like-button active" 
+                    onClick={() => handleLikeVideo(video)}
+                  >
+                    <img 
+                      src={heartFilledIcon}
+                      alt="Unlike" 
+                      className="like-button-icon" 
+                    />
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="empty-likes-message">
+                <img src={heartIcon} alt="No liked videos" className="empty-icon" />
+                <p>No liked videos yet</p>
+                <p className="empty-subtext">Videos you like will appear here</p>
+              </div>
+            )
           )}
         </div>
       </section>

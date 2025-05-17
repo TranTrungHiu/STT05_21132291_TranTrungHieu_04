@@ -1,0 +1,223 @@
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import "./EditProfileScreen.css";
+import { uploadImageToCloudinary } from "../../services/cloudinaryService";
+
+function EditProfileScreen() {
+  const [user, setUser] = useState(null);
+  const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem("user");
+    if (!userData) {
+      navigate("/");
+      return;
+    }
+
+    try {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+
+      // Set initial values for form fields
+      setUsername(parsedUser.username || "");
+      setBio(parsedUser.bio || "");
+      setAvatarUrl(parsedUser.avatarUrl || "");
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      setError("Unable to load your profile information");
+    }
+  }, [navigate]);
+
+  const handleGoBack = () => {
+    navigate("/home");
+  };
+
+  const handleLogout = () => {
+    // Clear user data from local storage
+    localStorage.removeItem("user");
+
+    // Redirect to login screen
+    navigate("/");
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatarFile(file);
+      // Create a preview URL for the selected image
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+
+    try {
+      setLoading(true);
+
+      // Handle avatar upload if a new file was selected
+      let finalAvatarUrl = avatarUrl;
+
+      if (avatarFile) {
+        try {
+          // Upload avatar to Cloudinary
+          finalAvatarUrl = await uploadImageToCloudinary(avatarFile);
+        } catch (uploadError) {
+          console.error("Error uploading avatar:", uploadError);
+          setError("Failed to upload profile image. Please try again.");
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Prepare updated user data
+      const updatedUser = {
+        ...user,
+        username,
+        bio,
+        avatarUrl: finalAvatarUrl,
+      };
+
+      // Update user data in API
+      const response = await fetch(
+        `https://6808ab9a942707d722df227c.mockapi.io/users/${user.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedUser),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Could not update profile");
+      }
+
+      const savedUser = await response.json();
+
+      // Update local storage with the new user data
+      localStorage.setItem("user", JSON.stringify(savedUser));
+
+      // Show success message
+      setSuccessMessage("Profile updated successfully!");
+
+      // Update current user state
+      setUser(savedUser);
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        navigate("/home");
+      }, 1500);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setError("Failed to update profile. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!user) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  return (
+    <div className="edit-profile-container">
+      <div className="header">
+        <button className="back-button" onClick={handleGoBack}>
+          <span>←</span>
+        </button>
+        <h2 className="header-title">Edit Profile</h2>
+        <div className="spacer"></div>
+      </div>
+
+      {error && <p className="error-message">{error}</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>}
+
+      <form onSubmit={handleSubmit} className="edit-form">
+        <div className="avatar-preview-section">
+          <div className="avatar-preview" onClick={triggerFileInput}>
+            <img
+              src={
+                previewUrl || avatarUrl || "/src/assets/images/Avatar 78.jpg"
+              }
+              alt="Profile"
+              className="avatar-image"
+            />
+            <div className="avatar-overlay">
+              <span>Change</span>
+            </div>
+          </div>
+          <div className="avatar-actions">
+            <button
+              type="button"
+              className="change-avatar-button"
+              onClick={triggerFileInput}
+            >
+              Upload New Photo
+            </button>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleAvatarChange}
+              style={{ display: "none" }}
+            />
+            <p className="avatar-info">
+              Click to select an image from your device
+            </p>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            placeholder="Your username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="bio">Bio</label>
+          <textarea
+            id="bio"
+            placeholder="Tell others about yourself"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            rows={4}
+          ></textarea>
+        </div>
+
+        <button type="submit" className="save-button" disabled={loading}>
+          {loading ? "Saving..." : "Save Profile"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default EditProfileScreen;

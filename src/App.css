@@ -19,3 +19,22 @@ body {
   max-width: none;
   margin: 0;
 }
+
+/* Global SVG styles for better rendering */
+svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Fix for SVG icons in buttons */
+button svg, 
+button img[src$=".svg"] {
+  pointer-events: none;
+}
+
+/* Ensure SVGs scale properly */
+img[src$=".svg"] {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
